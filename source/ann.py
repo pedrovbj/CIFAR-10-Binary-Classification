@@ -1,6 +1,53 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def cut(t, a=-1, b=1):
+    if t <= a:
+        return 0.0
+    elif t >= b:
+        return 1.0
+    else:
+        return (t-a)/(b-a)
+cut = np.vectorize(cut)
+
+class Perceptron():
+    def fit(self, X, Y, Xt, Yt, learning_rate=1, epochs=1000, show=False):
+        N, D = X.shape
+        self.w = np.zeros(D)
+
+        s = []
+        for epoch in range(1, epochs+1):
+            # if epoch % 10 == 0:
+            #     hist, bins = np.histogram(self.forward(X))
+            #     plt.plot(bins[:-1], hist)
+            #     plt.show()
+            #pY = self.predict(X)
+            #pY = 1.0/(1.0+np.exp(-self.forward(X)))
+            pY = cut(self.forward(X))
+            self.w += learning_rate*X.T.dot(Y-pY)
+
+            score = self.score(Xt, Yt)
+            #print('({}/{}) score: {}'.format(epoch, epochs, score))
+
+            s.append(100*score)
+
+        print('best score:', max(s))
+        if show:
+            plt.plot(s, linewidth=2, marker='o')
+            plt.title('Taxa de acerto em função do número de épocas')
+            plt.xlabel('Número de épocas (%)')
+            plt.ylabel('Taxa de acerto')
+            plt.show()
+
+    def forward(self, X):
+        return X.dot(self.w)
+
+    def predict(self, X):
+        return np.heaviside(self.forward(X), 1)
+
+    def score(self, X, Y):
+        return np.mean(self.predict(X) == Y)
+
 def readData(path):
     f = open(path, 'r')
 
@@ -14,46 +61,17 @@ def readData(path):
 
     return np.array(X), np.array(Y)
 
-class Perceptron():
-    def fit(self, X, Y, Xt, Yt, learning_rate=1e-2, epochs=1000, show=False):
-        N, D = X.shape
-        self.w = np.zeros(D)
+if __name__ == '__main__':
+    print('Loading data...')
+    X, Y = readData('../data/proc_db.dat')
 
-        s = []
-        for epoch in range(1, epochs+1):
-            pY = self.predict(X)
-            #pY = self.forward(X)
-            #pY = sigmoid(self.forward(X))
-            self.w += learning_rate*X.T.dot(Y-pY)
+    N = Y.shape[0]
+    pct_test = 0.15
+    Ntest = round(pct_test*N)
+    Xtest, Ytest = X[:Ntest,:], Y[:Ntest]
+    Xtrain, Ytrain = X[Ntest:,:], Y[Ntest:]
 
-            score = self.score(Xt, Yt)
-            #print('({}/{}) score: {}'.format(epoch, epochs, score))
-
-            s.append(score)
-
-        print('best score:', max(s))
-        if show:
-            plt.plot(s)
-            plt.show()
-
-    def forward(self, X):
-        return X.dot(self.w)
-
-    def predict(self, X):
-        return np.heaviside(self.forward(X), 1)
-
-    def score(self, X, Y):
-        return np.mean(self.predict(X) == Y)
-
-print('Loading data...')
-X, Y = readData('../data/proc_db.dat')
-
-N = Y.shape[0]
-pct_test = 0.20
-Ntest = round(pct_test*N)
-Xtest, Ytest = X[:Ntest,:], Y[:Ntest]
-Xtrain, Ytrain = X[Ntest:,:], Y[Ntest:]
-
-model = Perceptron()
-print('Training model...')
-model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1, epochs=40, show=True)
+    model = Perceptron()
+    print('Training model...')
+    #model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-5, epochs=150, show=True)
+    model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-6, epochs=150, show=True)
