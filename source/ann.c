@@ -87,3 +87,18 @@ void trainNet(float *w) {
 	printf("w[e1] = %f\n", sinapses[1]);
 	printf("w[e2] = %f\n", sinapses[2]);
 }
+
+void readData(FILE* f) {
+
+}
+
+int main(void) {
+    float *w;
+
+    w = (float*) calloc(N_TRAIN, sizeof(float));
+
+	trainNet(w);
+
+    free(w);
+    return 0;
+}
