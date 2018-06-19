@@ -23,7 +23,7 @@ class Perceptron():
             #     plt.show()
             #pY = self.predict(X)
             #pY = 1.0/(1.0+np.exp(-self.forward(X)))
-            pY = cut(self.forward(X))
+            pY = self.forward(X)
             self.w += learning_rate*X.T.dot(Y-pY)
 
             score = self.score(Xt, Yt)
@@ -40,10 +40,10 @@ class Perceptron():
             plt.show()
 
     def forward(self, X):
-        return X.dot(self.w)
+        return cut(X.dot(self.w))
 
     def predict(self, X):
-        return np.heaviside(self.forward(X), 1)
+        return np.round(self.forward(X))
 
     def score(self, X, Y):
         return np.mean(self.predict(X) == Y)
