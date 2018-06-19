@@ -29,7 +29,7 @@ class Perceptron():
         print('best score:', max(s))
         if show:
             plt.plot(s, linewidth=2, marker='o')
-            plt.title('Taxa de acerto em função do número de épocas')
+            plt.title('Taxa de acerto em função do número de épocas utilizando Função Cut (Taxa de aprendizado = 1e-6)')
             plt.xlabel('Número de épocas')
             plt.ylabel('Taxa de acerto (%)')
             plt.show()
@@ -68,4 +68,6 @@ if __name__ == '__main__':
 
     model = Perceptron()
     print('Training model...')
+    #model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-5, epochs=150, show=True)
     model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-6, epochs=150, show=True)
+    #model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-10, epochs=150, show=True)

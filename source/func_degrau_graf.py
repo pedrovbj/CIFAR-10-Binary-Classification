@@ -17,8 +17,8 @@ class Perceptron():
 
         s = []
         for epoch in range(1, epochs+1):
-            pY = self.forward(X) # Utiliza funcao Cut
-            #pY = np.heaviside(X.dot(self.w), 1) # Utiliza funcao degrau
+            #pY = self.forward(X) # Utiliza funcao Cut
+            pY = np.heaviside(X.dot(self.w), 1) # Utiliza funcao degrau
             self.w += learning_rate*X.T.dot(Y-pY)
 
             score = self.score(Xt, Yt)
@@ -29,7 +29,7 @@ class Perceptron():
         print('best score:', max(s))
         if show:
             plt.plot(s, linewidth=2, marker='o')
-            plt.title('Taxa de acerto em função do número de épocas')
+            plt.title('Taxa de acerto em função do número de épocas utilizando Função Degrau (Taxa de aprendizado = 1e-10)')
             plt.xlabel('Número de épocas')
             plt.ylabel('Taxa de acerto (%)')
             plt.show()
@@ -68,4 +68,6 @@ if __name__ == '__main__':
 
     model = Perceptron()
     print('Training model...')
-    model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-6, epochs=150, show=True)
+    #model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-5, epochs=150, show=True)
+    #model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-6, epochs=150, show=True)
+    model.fit(Xtrain, Ytrain, Xtest, Ytest, learning_rate=1e-10, epochs=150, show=True)
