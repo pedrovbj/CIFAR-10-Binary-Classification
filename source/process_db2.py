@@ -12,7 +12,7 @@ X = []
 Y = []
 for line in f_in:
     tok = line.split(',')
-    X.append([int(x) for x in tok[:-9]]+[1])
+    X.append([int(x) for x in tok[:-9]])
     # grupo 9 -> ultima coluna
     Y.append(int(tok[-1]))
 
